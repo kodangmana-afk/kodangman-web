@@ -49,6 +49,7 @@ exports.handler = async (event) => {
       html = html.replace(/<title>.*<\/title>/, `<title>${title}</title>`);
       html = html.replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`);
       html = html.replace(/<meta property="og:image" content="[^"]*" \/>/, `<meta property="og:image" content="${image}" />`);
+      html = html.replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="https://www.kodangman.shop/?shop=${shopId}" />`);
     }
   } catch (error) {
     console.log("Error fetching Google Sheets:", error);
