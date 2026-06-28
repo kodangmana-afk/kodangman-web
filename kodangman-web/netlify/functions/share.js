@@ -11,6 +11,7 @@ exports.handler = async (event) => {
      return { statusCode: 500, body: "Error loading site" };
   }
 
+  // ค่าเริ่มต้น (รูปหน้าร้านพื้นฐาน)
   let finalTitle = "โกดังมานะ";
   let finalDesc = "พิกัดร้านค้า ดูสถานะเปิด-ปิดร้านได้แบบเรียลไทม์";
   let image = "https://i.postimg.cc/wMVjb074/khe-ywx-xn.jpg";
@@ -24,23 +25,9 @@ exports.handler = async (event) => {
       finalTitle = `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})`;
       finalDesc = `ดูพิกัดร้าน ${targetShop.name} แผนที่นำทาง และสถานะร้านคลิกเลย! 👇`;
       
-      let targetPic = targetShop["รูปเมนู"] || targetShop["รูปโปรโมท"] || targetShop.ShopImg;
-      if (targetPic) {
-          let path = targetPic;
-          if (path.indexOf("http") === 0) {
-              let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)/);
-              if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
-              else {
-                  let matchId = path.match(/id=([^&]+)/);
-                  if (matchId) image = "https://lh3.googleusercontent.com/d/" + matchId[1];
-                  else image = path;
-              }
-          } else {
-              let appName = "รถโกดัง-112813522";
-              let tableName = "ลูกค้า";
-              let safePath = path.split('/').map(part => encodeURIComponent(part)).join('/');
-              image = "https://www.appsheet.com/template/gettablefileurl?appName=" + encodeURIComponent(appName) + "&tableName=" + encodeURIComponent(tableName) + "&fileName=" + safePath;
-          }
+      // ดึงรูปหน้าร้าน (ShopImg) เป็นหลัก ตามที่บอสต้องการค่ะ
+      if (targetShop.ShopImg) {
+          image = targetShop.ShopImg;
       }
     }
   } catch (error) {
