@@ -46,10 +46,11 @@ exports.handler = async (event) => {
       }
 
       // 3. จัดการเขียนทับชื่อและรูปภาพส่งให้ Facebook ดู
-      html = html.replace(/<title>.*<\/title>/, `<title>${title}</title>`);
-      html = html.replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title}" />`);
-      html = html.replace(/<meta property="og:image" content="[^"]*" \/>/, `<meta property="og:image" content="${image}" />`);
-      html = html.replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="https://www.kodangman.shop/?shop=${shopId}" />`);
+let myTitle = "โกดังมานะ";
+html = html.replace(/<title>.*<\/title>/i, `<title>${myTitle}</title>`);
+html = html.replace(/<meta[^>]*property="og:title"[^>]*>/gi, `<meta property="og:title" content="${myTitle}" />`);
+html = html.replace(/<meta[^>]*property="og:image"[^>]*>/gi, `<meta property="og:image" content="${image}" />`);
+html = html.replace(/<meta[^>]*property="og:url"[^>]*>/gi, "");
     }
   } catch (error) {
     console.log("Error fetching Google Sheets:", error);
