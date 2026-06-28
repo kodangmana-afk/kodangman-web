@@ -26,23 +26,23 @@ exports.handler = async (event) => {
       let title = `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})`;
       let image = "https://i.postimg.cc/wMVjb074/khe-ywx-xn.jpg"; // รูปโลโก้โกดังพื้นฐาน
 
-      // สูตรแปลงรูปร้านค้าแบบเดียวกับหน้าเว็บของบอสเป๊ะๆ
-      let targetPic = targetShop["รูปเมนู"] || targetShop["รูปโปรโมท"] || targetShop.ShopImg;
-    if (targetPic) {
-        let path = targetPic;
-        if (path.indexOf("http") === 0) {
-          let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)/);
-          if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
-          else {
-            let matchId = path.match(/id=([^&]+)/);
-            if (matchId) image = "https://lh3.googleusercontent.com/d/" + matchId[1];
-            else image = path;
-          }
-        } else {
-          let appName = "รถโกดัง-112813522";
-          let tableName = "ลูกค้า";
-          let safePath = path.split('/').map(part => encodeURIComponent(part)).join('/');
-          image = "https://www.appsheet.com/template/gettablefileurl?appName=" + encodeURIComponent(appName) + "&tableName=" + encodeURIComponent(tableName) + "&fileName=" + safePath;
+      if (targetPic) {
+            let path = targetPic;
+            if (path.indexOf("http") === 0) {
+                // แก้สูตรตรงนี้ให้ดึง ID จากลิงก์ Drive ได้เก่งขึ้นและแปลงลิงก์ให้ Facebook ชอบ
+                let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
+                else {
+                    let matchId = path.match(/id=([^&]+)/);
+                    if (matchId) image = "https://lh3.googleusercontent.com/d/" + matchId[1];
+                    else image = path;
+                }
+            } else {
+                let appName = "รถโกดัง-112813522";
+                let tableName = "ลูกค้า";
+                let safePath = path.split('/').map(part => encodeURIComponent(part)).join('/');
+                image = "https://www.appsheet.com/template/gettablefileurl?appName=" + encodeURIComponent(appName) + "&tableName=" + encodeURIComponent(tableName) + "&fileName=" + safePath;
+            }
         }
       }
 
