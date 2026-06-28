@@ -29,8 +29,7 @@ exports.handler = async (event) => {
       if (targetPic) {
             let path = targetPic;
             if (path.indexOf("http") === 0) {
-                // แก้สูตรตรงนี้ให้ดึง ID จากลิงก์ Drive ได้เก่งขึ้นและแปลงลิงก์ให้ Facebook ชอบ
-                let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)\//);
                 if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
                 else {
                     let matchId = path.match(/id=([^&]+)/);
@@ -43,6 +42,7 @@ exports.handler = async (event) => {
                 let safePath = path.split('/').map(part => encodeURIComponent(part)).join('/');
                 image = "https://www.appsheet.com/template/gettablefileurl?appName=" + encodeURIComponent(appName) + "&tableName=" + encodeURIComponent(tableName) + "&fileName=" + safePath;
             }
+        }
         }
       }
 
