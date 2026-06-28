@@ -1,12 +1,8 @@
 exports.handler = async (event) => {
-  // รับรหัสล็อคจาก URL
   const shopId = event.queryStringParameters.shop;
-  
-  // ลิงก์ดึงข้อมูลจากชีตของบอส
   const gasUrl = "https://script.google.com/macros/s/AKfycbw13qPZkiCxF3vb1ltlg7Cky7H7rSonocdkEAz-TVq_rKrFuXQ5Y-fDJVCUpx1u44c/exec";
-
-  // 1. แอบดึงหน้าเว็บ index.html แบบปกติมารอไว้ก่อน
   const baseUrl = process.env.URL || "https://www.kodangman.shop";
+  
   let html = "";
   try {
      const indexRes = await fetch(baseUrl + "/");
@@ -15,58 +11,51 @@ exports.handler = async (event) => {
      return { statusCode: 500, body: "Error loading site" };
   }
 
-  // 2. วิ่งไปเช็คข้อมูลรูปร้านใน Google Sheets
+  let finalTitle = "โกดังมานะ";
+  let finalDesc = "พิกัดร้านค้า ดูสถานะเปิด-ปิดร้านได้แบบเรียลไทม์";
+  let image = "https://i.postimg.cc/wMVjb074/khe-ywx-xn.jpg";
+
   try {
     const res = await fetch(gasUrl);
     const shops = await res.json();
     const targetShop = shops.find(s => s.lock && s.lock.includes(shopId));
 
-    // ถ้าเจอร้านที่รหัสตรงกัน ให้สลับรูปและชื่อหน้าปก!
     if (targetShop) {
-      let title = `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})`;
-      let image = "https://i.postimg.cc/wMVjb074/khe-ywx-xn.jpg"; // รูปโลโก้โกดังพื้นฐาน
-
+      finalTitle = `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})`;
+      finalDesc = `ดูพิกัดร้าน ${targetShop.name} แผนที่นำทาง และสถานะร้านคลิกเลย! 👇`;
+      
       let targetPic = targetShop["รูปเมนู"] || targetShop["รูปโปรโมท"] || targetShop.ShopImg;
-    if (targetPic) {
-        let path = targetPic;
-            if (path.indexOf("http") === 0) {
-                let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)\//);
-                if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
-                else {
-                    let matchId = path.match(/id=([^&]+)/);
-                    if (matchId) image = "https://lh3.googleusercontent.com/d/" + matchId[1];
-                    else image = path;
-                }
-            } else {
-                let appName = "รถโกดัง-112813522";
-                let tableName = "ลูกค้า";
-                let safePath = path.split('/').map(part => encodeURIComponent(part)).join('/');
-                image = "https://www.appsheet.com/template/gettablefileurl?appName=" + encodeURIComponent(appName) + "&tableName=" + encodeURIComponent(tableName) + "&fileName=" + safePath;
-            }
-        }
-        }
+      if (targetPic) {
+          let path = targetPic;
+          if (path.indexOf("http") === 0) {
+              let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)/);
+              if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
+              else {
+                  let matchId = path.match(/id=([^&]+)/);
+                  if (matchId) image = "https://lh3.googleusercontent.com/d/" + matchId[1];
+                  else image = path;
+              }
+          } else {
+              let appName = "รถโกดัง-112813522";
+              let tableName = "ลูกค้า";
+              let safePath = path.split('/').map(part => encodeURIComponent(part)).join('/');
+              image = "https://www.appsheet.com/template/gettablefileurl?appName=" + encodeURIComponent(appName) + "&tableName=" + encodeURIComponent(tableName) + "&fileName=" + safePath;
+          }
       }
-
-     // 3. จัดการเขียนทับชื่อและรูปภาพส่งให้ Facebook ดู
-let finalTitle = targetShop ? `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})` : "โกดังมานะ";
-let finalDesc = targetShop ? `ดูพิกัดร้าน ${targetShop.name} แผนที่นำทาง และสถานะร้านคลิกเลย! 👇` : "พิกัดร้านค้า ดูสถานะเปิด-ปิดร้านได้แบบเรียลไทม์";
-
-html = html.replace(/<title>.*<\/title>/i, `<title>${finalTitle}</title>`);
-html = html.replace(/<meta[^>]*property="og:title"[^>]*>/gi, `<meta property="og:title" content="${finalTitle}" />`);
-html = html.replace(/<meta[^>]*property="og:image"[^>]*>/gi, `<meta property="og:image" content="${image}" />`);
-html = html.replace(/<meta[^>]*property="og:description"[^>]*>/gi, `<meta property="og:description" content="${finalDesc}" />`);
-html = html.replace(/<meta[^>]*property="og:url"[^>]*>/gi, "");
+    }
   } catch (error) {
     console.log("Error fetching Google Sheets:", error);
   }
 
-  // 4. ส่งหน้าเว็บที่ตกแต่งแล้วกลับไปให้เปิดใช้งาน
+  html = html.replace(/<title>.*<\/title>/i, `<title>${finalTitle}</title>`);
+  html = html.replace(/<meta[^>]*property="og:title"[^>]*>/gi, `<meta property="og:title" content="${finalTitle}" />`);
+  html = html.replace(/<meta[^>]*property="og:image"[^>]*>/gi, `<meta property="og:image" content="${image}" />`);
+  html = html.replace(/<meta[^>]*property="og:description"[^>]*>/gi, `<meta property="og:description" content="${finalDesc}" />`);
+  html = html.replace(/<meta[^>]*property="og:url"[^>]*>/gi, "");
+
   return {
     statusCode: 200,
-    headers: {
-      "Content-Type": "text/html; charset=utf-8",
-      "Cache-Control": "no-cache"
-    },
+    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-cache" },
     body: html
   };
 };
