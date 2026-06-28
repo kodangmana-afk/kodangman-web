@@ -26,8 +26,9 @@ exports.handler = async (event) => {
       let title = `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})`;
       let image = "https://i.postimg.cc/wMVjb074/khe-ywx-xn.jpg"; // รูปโลโก้โกดังพื้นฐาน
 
-      if (targetPic) {
-            let path = targetPic;
+      let targetPic = targetShop["รูปเมนู"] || targetShop["รูปโปรโมท"] || targetShop.ShopImg;
+    if (targetPic) {
+        let path = targetPic;
             if (path.indexOf("http") === 0) {
                 let matchD = path.match(/\/d\/([a-zA-Z0-9_-]+)\//);
                 if (matchD) image = "https://lh3.googleusercontent.com/d/" + matchD[1];
