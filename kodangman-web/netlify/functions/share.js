@@ -46,7 +46,7 @@ exports.handler = async (event) => {
         }
       }
 
-      // 3. จัดการเขียนทับชื่อและรูปภาพส่งให้ Facebook ดู
+     // 3. จัดการเขียนทับชื่อและรูปภาพส่งให้ Facebook ดู
 let finalTitle = targetShop ? `พิกัดร้าน: ${targetShop.name} (ล็อค ${shopId})` : "โกดังมานะ";
 let finalDesc = targetShop ? `ดูพิกัดร้าน ${targetShop.name} แผนที่นำทาง และสถานะร้านคลิกเลย! 👇` : "พิกัดร้านค้า ดูสถานะเปิด-ปิดร้านได้แบบเรียลไทม์";
 
@@ -55,7 +55,6 @@ html = html.replace(/<meta[^>]*property="og:title"[^>]*>/gi, `<meta property="og
 html = html.replace(/<meta[^>]*property="og:image"[^>]*>/gi, `<meta property="og:image" content="${image}" />`);
 html = html.replace(/<meta[^>]*property="og:description"[^>]*>/gi, `<meta property="og:description" content="${finalDesc}" />`);
 html = html.replace(/<meta[^>]*property="og:url"[^>]*>/gi, "");
-    }
   } catch (error) {
     console.log("Error fetching Google Sheets:", error);
   }
