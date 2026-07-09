@@ -1,1 +1,1 @@
-/ shop=:id  /.netlify/functions/share?shop=:id  200!
+/  /.netlify/functions/share  200!
