@@ -27,7 +27,7 @@ exports.handler = async (event) => {
     const targetShop = shops.find(s => s.lock && s.lock.includes(shopId));
 
     if (targetShop) {
-      // 🌟 อัปเกรด 1: จัดแคปชั่นให้ครบเครื่อง!
+      // 🌟 จัดแคปชั่นให้ครบเครื่อง!
       finalTitle = `🟢 ร้าน ${targetShop.name} @ ล็อค ${shopId} | ตลาดเซฟวันโก`;
       
       let phoneText = targetShop.phone ? `☎️ โทร: ${targetShop.phone}` : '';
@@ -38,7 +38,7 @@ exports.handler = async (event) => {
           ? `${extraInfo} \nคลิกดูแผนที่นำทางมาร้านเราแบบเป๊ะๆ ไม่มีหลง แวะมาอุดหนุนกันนะคะ! 👇✨` 
           : `คลิกดูแผนที่นำทางมาร้านเราแบบเป๊ะๆ ไม่มีหลง แวะมาอุดหนุนกันนะคะ! 👇✨`;
       
-      // 🌟 อัปเกรด 2: ปรับสูตรดึงรูปให้ Facebook ชอบ
+      // 🌟 ปรับสูตรดึงรูปให้ Facebook ชอบ
       if (targetShop.ShopImg || targetShop.shopImg) {
           let path = targetShop.ShopImg || targetShop.shopImg;
           if (path.indexOf("http") === 0) {
